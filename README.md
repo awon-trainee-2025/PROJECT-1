@@ -69,10 +69,9 @@ View the complete design on [Figma](https://www.figma.com/design/synPECe3VTrOajQ
 
 ## 🧩 Custom Widgets
 - Custom Button  
-- Custom Draggable Scrollable Sheet  
-- Custom Search Bar  
-- Custom Text Field  
-- Bottom Navigation Bar  
+- Custom Search Bar
+- Bottom Navigation Bar
+- Custom Past Ride logs
 
 ## ⚙️ Known Issues (work in progress)
 
@@ -81,5 +80,5 @@ For questions, feedback, or collaboration, feel free to reach out to our team:
 - 👩‍💻 [@Deemabakhyer](https://github.com/Deemabakhyer)
 - 👨‍💻 [@AhmadAbdullah123](https://github.com/AhmadAbdullah123)
 - 👩‍💻 [@MawadaS](https://github.com/MawadaS)
-- 👩‍💻 [@MawadaS](https://github.com/MawadaS)
+- 👩‍💻 [@RaghadAi1](https://github.com/RaghadAi1)
 
