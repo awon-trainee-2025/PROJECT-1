@@ -72,6 +72,7 @@ View the complete design on [Figma](https://www.figma.com/design/synPECe3VTrOajQ
 - Custom Search Bar
 - Bottom Navigation Bar
 - Custom Past Ride logs
+- Custom Car Option
 
 ## ⚙️ Known Issues (work in progress)
 
