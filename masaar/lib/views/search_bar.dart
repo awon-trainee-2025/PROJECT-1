@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:masaar/widgets/custom_default_search_bar.dart';
+import 'package:masaar/widgets/custom_search_bar.dart';
 
 class SearchBarView extends StatelessWidget {
   const SearchBarView({super.key});
@@ -7,10 +7,17 @@ class SearchBarView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          CustomSearchBar(icon: Icon(Icons.search), hintText: 'Search here...'),
-        ],
+      body: Center(
+        child: 
+          AppBar(
+            actions: [
+              CustomSearchBar(
+                leadingIcon: Icon(Icons.search),
+                hintText: 'Search here...',
+                trailing: IconButton(onPressed: () {}, icon: Icon(Icons.clear)),
+              ),
+            ],
+          ),
       ),
     );
   }
