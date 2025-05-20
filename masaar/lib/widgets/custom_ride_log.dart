@@ -5,12 +5,14 @@ class CustomRideLog extends StatelessWidget {
   final String date;
   final String status;
   final String price;
+  final String time;
   const CustomRideLog({
     super.key,
     required this.destination,
     required this.status,
     required this.date,
     required this.price,
+    required this.time,
   });
 
   @override
@@ -23,7 +25,10 @@ class CustomRideLog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset('images/car.png'),
+          if (status == 'Cancelled')
+            Image.asset('images/cancelled_car.png')
+          else
+            Image.asset('images/car.png'),
 
           Column(
             spacing: 5,
@@ -41,14 +46,24 @@ class CustomRideLog extends StatelessWidget {
                     ),
                   ),
                   Text(' - '),
-                  Text(
-                    status,
-                    style: TextStyle(
-                      color: Color(0xFF919191),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                  if (status == 'Cancelled')
+                    Text(
+                      status,
+                      style: TextStyle(
+                        color: Color(0xFF919191),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                  else
+                    Text(
+                      time,
+                      style: TextStyle(
+                        color: Color(0xFF919191),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
                 ],
               ),
               Text(
