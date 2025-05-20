@@ -21,7 +21,7 @@ class CustomRideLog extends StatelessWidget {
       width: double.infinity,
       color: Colors.white,
       child: Row(
-        spacing: 15,
+        spacing: 10,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
