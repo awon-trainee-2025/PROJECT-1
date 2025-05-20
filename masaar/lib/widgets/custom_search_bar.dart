@@ -17,6 +17,7 @@ class CustomSearchBar extends StatefulWidget {
 }
 
 class _CustomSearchBarState extends State<CustomSearchBar> {
+  final FocusNode focusNode = FocusNode();
   final List places = [
     'Masjid Al-Haram',
     'Umm al-Qura University',
@@ -39,9 +40,18 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           width: 350,
           child: SearchBar(
             shape: WidgetStatePropertyAll(RoundedRectangleBorder()),
+            overlayColor: MaterialStateProperty.resolveWith<Color?>((
+              Set<MaterialState> states,
+            ) {
+              if (states.contains(MaterialState.focused)) {
+                return Colors.blue.withOpacity(0.2); // overlay on focus
+              }
+              return null;
+            }),
             leading: widget.leadingIcon,
             hintText: widget.hintText,
             trailing: [SizedBox(width: 40, child: widget.trailing)],
+            focusNode: focusNode,
             controller: controller,
             onTap: () {
               controller.openView();
