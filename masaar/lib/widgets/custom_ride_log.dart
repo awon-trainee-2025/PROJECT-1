@@ -90,4 +90,8 @@ class CustomRideLog extends StatelessWidget {
       ),
     );
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/main
