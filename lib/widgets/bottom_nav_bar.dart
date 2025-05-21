@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:masaar/views/home_page.dart';
+// import 'package:masaar/views/home_page.dart';
 
 // Main App
 class MyApp extends StatelessWidget {
@@ -27,7 +27,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   final List<Widget> _pages = const [
     // put your pages here
-    HomePage(),
+    // HomePage(),
     // Ridepage(),
     // AccountPage(),
   ];
@@ -55,8 +55,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(
-                0.25,
+              color: Colors.black.withValues(
+                alpha: 0.25,
               ), // 25% visible (75% transparent)
               offset: Offset(0, -2), // 👈 Shadow above
               blurRadius: 4,
