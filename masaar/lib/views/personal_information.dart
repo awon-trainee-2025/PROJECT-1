@@ -34,39 +34,39 @@ class PersonalInformation extends StatelessWidget {
       ),
       body: Column(
         children: [
-          GestureDetector(
-            onTap: () {
-              print('Image tapped');
-            },
-            child: Container(
-              height: 200,
-              width: double.infinity,
-              color: Colors.white,
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Image.asset(
+          Container(
+            height: 200,
+            width: double.infinity,
+            color: Colors.white,
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: () {
+                    print('Image tapped');
+                  },
+                  child: Image.asset(
                     'images/profile_upload.png',
                     height: 100,
                     width: 100,
                     fit: BoxFit.cover,
                   ),
-                  const SizedBox(height: 12),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Add a profile picture so drivers can recognize you',
-                      style: TextStyle(
-                        color: Color(0xFF919191),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Add a profile picture so drivers can recognize you',
+                    style: TextStyle(
+                      color: Color(0xFF919191),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
 
