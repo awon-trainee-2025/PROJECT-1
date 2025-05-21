@@ -63,6 +63,12 @@ flutter:
     - images\car.png
     - images\SAR.png
     - images\profile_placeholder.png
+    - images\user.png
+    - images\earth.png
+    - images\location.png
+    - images\wallet.png
+    - images\logout.png
+    - images\delete.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
