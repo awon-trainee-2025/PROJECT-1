@@ -6,6 +6,7 @@ class CustomRideLog extends StatelessWidget {
   final String status;
   final String price;
   final String time;
+
   const CustomRideLog({
     super.key,
     required this.destination,
@@ -18,73 +19,69 @@ class CustomRideLog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
       color: Colors.white,
+      padding: const EdgeInsets.all(12),
       child: Row(
-        spacing: 10,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (status == 'Cancelled')
-            Image.asset('images/cancelled_car.png')
-          else
-            Image.asset('images/car.png'),
-
-          Column(
-            spacing: 5,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    date,
-                    style: TextStyle(
-                      color: Color(0xFF919191),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(' - '),
-                  if (status == 'Cancelled')
+          Image.asset(
+            status == 'Cancelled'
+                ? 'images/cancelled_car.png'
+                : 'images/car.png',
+            width: 40,
+            height: 40,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
                     Text(
-                      status,
-                      style: TextStyle(
-                        color: Color(0xFF919191),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  else
-                    Text(
-                      time,
-                      style: TextStyle(
+                      date,
+                      style: const TextStyle(
                         color: Color(0xFF919191),
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                ],
-              ),
-              Text(
-                destination,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
+                    const Text(' - '),
+                    Text(
+                      status == 'Cancelled' ? status : time,
+                      style: const TextStyle(
+                        color: Color(0xFF919191),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    price,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                const SizedBox(height: 4),
+                Text(
+                  destination,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
                   ),
-                  const SizedBox(width: 4),
-                  Image.asset('images/SAR.png'),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Text(
+                      price,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Image.asset('images/SAR.png', width: 16, height: 16),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
