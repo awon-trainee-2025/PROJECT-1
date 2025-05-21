@@ -81,7 +81,7 @@ class RideLogsView extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          title: Text(
+          title: const Text(
             'Past Rides',
             style: TextStyle(
               color: Colors.black,
@@ -98,7 +98,13 @@ class RideLogsView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(padding: EdgeInsets.only(left: 18.0, bottom: 6)),
+                const Padding(
+                  padding: EdgeInsets.only(left: 18.0, bottom: 6),
+                  child: Text(
+                    'Past Rides',
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
+                  ),
+                ),
                 const Divider(thickness: 1, indent: 18, endIndent: 18),
 
                 ...monthOrder
