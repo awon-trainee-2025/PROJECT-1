@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:masaar/views/personal_information.dart';
 import 'package:masaar/widgets/settings_header.dart';
 import 'package:masaar/widgets/settings_items.dart';
 
@@ -41,7 +43,13 @@ class AccountView extends StatelessWidget {
                 SettingsItem(
                   image: Image.asset('images/user.png'),
                   title: 'Personal Information',
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(
+                      PersonalInformation(),
+                      transition: Transition.rightToLeft,
+                      duration: Duration(milliseconds: 300),
+                    );
+                  },
                 ),
                 SettingsItem(
                   image: Image.asset('images/earth.png'),
@@ -74,6 +82,7 @@ class AccountView extends StatelessWidget {
                 SettingsItem(
                   image: Image.asset('images/delete.png'),
                   title: 'Delete Account',
+                  color: Color(0xFFAC0404),
                   onTap: () {},
                 ),
               ],
