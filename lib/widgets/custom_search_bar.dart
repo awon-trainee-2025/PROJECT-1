@@ -40,11 +40,11 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
           width: 350,
           child: SearchBar(
             shape: WidgetStatePropertyAll(RoundedRectangleBorder()),
-            overlayColor: MaterialStateProperty.resolveWith<Color?>((
-              Set<MaterialState> states,
+            overlayColor: WidgetStateProperty.resolveWith<Color?>((
+              Set<WidgetState> states,
             ) {
-              if (states.contains(MaterialState.focused)) {
-                return Colors.blue.withOpacity(0.2); // overlay on focus
+              if (states.contains(WidgetState.focused)) {
+                return Colors.blue.withValues(alpha: 0.2); // overlay on focus
               }
               return null;
             }),
