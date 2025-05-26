@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:masaar/views/personal_information.dart';
+import 'package:masaar/views/account_views/personal_information.dart';
 import 'package:masaar/widgets/settings_widgets/settings_header.dart';
 import 'package:masaar/widgets/settings_widgets/settings_items.dart';
 
