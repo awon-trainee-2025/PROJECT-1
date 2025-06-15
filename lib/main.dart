@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:masaar/views/auth/login_screen.dart';
-import 'package:masaar/views/auth/otp_screen.dart';
-import 'package:masaar/views/auth/sign_up_screen.dart';
+import 'package:masaar/mawadah/views/auth/login_screen.dart';
+import 'package:masaar/mawadah/views/auth/otp_screen.dart';
+import 'package:masaar/mawadah/views/auth/sign_up_screen.dart';
 //import 'package:masaar/home_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

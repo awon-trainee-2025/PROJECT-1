@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -12,18 +13,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
-final FocusNode _passwordFocusNode = FocusNode();
-final FocusNode _confirmPasswordFocusNode = FocusNode();
-final FocusNode _firstNameFocusNode = FocusNode();
-final FocusNode _lastNameFocusNode = FocusNode();
-final FocusNode _phoneFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
+  final FocusNode _firstNameFocusNode = FocusNode();
+  final FocusNode _lastNameFocusNode = FocusNode();
+  final FocusNode _phoneFocusNode = FocusNode();
 
-bool _isFirstNameFocused = false;
-bool _isLastNameFocused = false;
-bool _isPhoneFocused = false;
-bool _isPasswordFocused = false;
-bool _isConfirmPasswordFocused = false;
+  bool _isFirstNameFocused = false;
+  bool _isLastNameFocused = false;
+  bool _isPhoneFocused = false;
+  bool _isPasswordFocused = false;
+  bool _isConfirmPasswordFocused = false;
   bool isPasswordValid = false;
   bool isNumberValid = false;
   bool isSpecialCharValid = false;
@@ -35,49 +35,50 @@ bool _isConfirmPasswordFocused = false;
       isSpecialCharValid = RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value);
     });
   }
+
   @override
-void initState() {
-  super.initState();
-  _passwordFocusNode.addListener(() {
-    setState(() {
-      _isPasswordFocused = _passwordFocusNode.hasFocus;
+  void initState() {
+    super.initState();
+    _passwordFocusNode.addListener(() {
+      setState(() {
+        _isPasswordFocused = _passwordFocusNode.hasFocus;
+      });
     });
-  });
-  _confirmPasswordFocusNode.addListener(() {
-    setState(() {
-      _isConfirmPasswordFocused = _confirmPasswordFocusNode.hasFocus;
+    _confirmPasswordFocusNode.addListener(() {
+      setState(() {
+        _isConfirmPasswordFocused = _confirmPasswordFocusNode.hasFocus;
+      });
     });
-  });
-  _firstNameFocusNode.addListener(() {
-    setState(() {
-      _isFirstNameFocused = _firstNameFocusNode.hasFocus;
+    _firstNameFocusNode.addListener(() {
+      setState(() {
+        _isFirstNameFocused = _firstNameFocusNode.hasFocus;
+      });
     });
-  });
-  _lastNameFocusNode.addListener(() {
-    setState(() {
-      _isLastNameFocused = _lastNameFocusNode.hasFocus;
+    _lastNameFocusNode.addListener(() {
+      setState(() {
+        _isLastNameFocused = _lastNameFocusNode.hasFocus;
+      });
     });
-  });
-  _phoneFocusNode.addListener(() {
-    setState(() {
-      _isPhoneFocused = _phoneFocusNode.hasFocus;
+    _phoneFocusNode.addListener(() {
+      setState(() {
+        _isPhoneFocused = _phoneFocusNode.hasFocus;
+      });
     });
-  });
-}
-@override
-void dispose() {
-  firstNameController.dispose();
-  lastNameController.dispose();
-  phoneController.dispose();
-  passwordController.dispose();
-  confirmPasswordController.dispose();
-  _passwordFocusNode.dispose();
-  _confirmPasswordFocusNode.dispose();
-  _firstNameFocusNode.dispose();
-  _lastNameFocusNode.dispose();
-  _phoneFocusNode.dispose();
-  super.dispose();
-}
+  }
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
+    _firstNameFocusNode.dispose();
+    _lastNameFocusNode.dispose();
+    _phoneFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +96,10 @@ void dispose() {
                     width: 44,
                     height: 44,
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Color(0xFF6A42C2)),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Color(0xFF6A42C2),
+                      ),
                       iconSize: 24,
                       onPressed: () => Navigator.of(context).pop(),
                       style: IconButton.styleFrom(
@@ -145,7 +149,10 @@ void dispose() {
                   borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
                 ),
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 16,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -164,290 +171,328 @@ void dispose() {
                       ),
                       // ...inside your build method, replacing the fields section...
 
-// First and Last Name
-Row(
-  children: [
-    Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'First name',
-            style: TextStyle(
-              color: Color(0xff69696b),
-              fontFamily: 'inter',
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 4),
-          SizedBox(
-            height: 45,
-            child: TextField(
-  controller: firstNameController,
-  focusNode: _firstNameFocusNode,
-  decoration: InputDecoration(
-    filled: true,
-    fillColor: _isFirstNameFocused ? Colors.white : const Color(0xFFF2F2F2),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide.none,
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide.none,
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(
-        color: Color(0xFF6A42C2),
-        width: 2,
-      ),
-    ),
-    contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-    isDense: true,
-  ),
-  style: const TextStyle(fontFamily: 'inter'),
-),
-          ),
-        ],
-      ),
-    ),
-    const SizedBox(width: 12),
-    Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Last name',
-            style: TextStyle(
-              color: Color(0xff69696b),
-              fontFamily: 'inter',
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 4),
-          SizedBox(
-            height: 45,
-            child: TextField(
-  controller: lastNameController,
-  focusNode: _lastNameFocusNode,
-  decoration: InputDecoration(
-    filled: true,
-    fillColor: _isLastNameFocused ? Colors.white : const Color(0xFFF2F2F2),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide.none,
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide.none,
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(
-        color: Color(0xFF6A42C2),
-        width: 2,
-      ),
-    ),
-    contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-    isDense: true,
-  ),
-  style: const TextStyle(fontFamily: 'inter'),
-),
-          ),
-        ],
-      ),
-    ),
-  ],
-),
-const SizedBox(height: 16),
+                      // First and Last Name
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'First name',
+                                  style: TextStyle(
+                                    color: Color(0xff69696b),
+                                    fontFamily: 'inter',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                SizedBox(
+                                  height: 45,
+                                  child: TextField(
+                                    controller: firstNameController,
+                                    focusNode: _firstNameFocusNode,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor:
+                                          _isFirstNameFocused
+                                              ? Colors.white
+                                              : const Color(0xFFF2F2F2),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFF6A42C2),
+                                          width: 2,
+                                        ),
+                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 14,
+                                            horizontal: 12,
+                                          ),
+                                      isDense: true,
+                                    ),
+                                    style: const TextStyle(fontFamily: 'inter'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Last name',
+                                  style: TextStyle(
+                                    color: Color(0xff69696b),
+                                    fontFamily: 'inter',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                SizedBox(
+                                  height: 45,
+                                  child: TextField(
+                                    controller: lastNameController,
+                                    focusNode: _lastNameFocusNode,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor:
+                                          _isLastNameFocused
+                                              ? Colors.white
+                                              : const Color(0xFFF2F2F2),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFF6A42C2),
+                                          width: 2,
+                                        ),
+                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 14,
+                                            horizontal: 12,
+                                          ),
+                                      isDense: true,
+                                    ),
+                                    style: const TextStyle(fontFamily: 'inter'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
 
-// Phone Number
-Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    const Text(
-      'Phone number',
-      style: TextStyle(
-        color: Color(0xff69696b),
-        fontFamily: 'inter',
-        fontWeight: FontWeight.w500,
-        fontSize: 16,
-      ),
-    ),
-    const SizedBox(height: 4),
-    Row(
-      children: [
-        Container(
-          height: 45,
-          width: 59,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF2F2F2),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Center(
-            child: Text(
-              '+966',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF69696B),
-                fontFamily: 'inter',
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 3),
-        Expanded(
-          child: SizedBox(
-            height: 45,
-            child: TextField(
-  controller: phoneController,
-  focusNode: _phoneFocusNode,
-  decoration: InputDecoration(
-    filled: true,
-    fillColor: _isPhoneFocused ? Colors.white : const Color(0xFFF2F2F2),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide.none,
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide.none,
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(
-        color: Color(0xFF6A42C2),
-        width: 2,
-      ),
-    ),
-    contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-    isDense: true,
-  ),
-  style: const TextStyle(fontFamily: 'inter'),
-),
-          ),
-        ),
-      ],
-    ),
-  ],
-),
-const SizedBox(height: 16),
+                      // Phone Number
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Phone number',
+                            style: TextStyle(
+                              color: Color(0xff69696b),
+                              fontFamily: 'inter',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Container(
+                                height: 45,
+                                width: 59,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF2F2F2),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    '+966',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF69696B),
+                                      fontFamily: 'inter',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 3),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 45,
+                                  child: TextField(
+                                    controller: phoneController,
+                                    focusNode: _phoneFocusNode,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor:
+                                          _isPhoneFocused
+                                              ? Colors.white
+                                              : const Color(0xFFF2F2F2),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFF6A42C2),
+                                          width: 2,
+                                        ),
+                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 14,
+                                            horizontal: 12,
+                                          ),
+                                      isDense: true,
+                                    ),
+                                    style: const TextStyle(fontFamily: 'inter'),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
 
-// Password and Confirm Password
-Row(
-  children: [
-    Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Password',
-            style: TextStyle(
-              color: Color(0xff69696b),
-              fontFamily: 'inter',
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 4),
-          TextField(
-            controller: passwordController,
-            focusNode: _passwordFocusNode,
-            obscureText: true,
-            onChanged: _validatePassword,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: _isPasswordFocused ? Colors.white : const Color(0xFFF2F2F2),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(
-                  color: Color(0xFF6A42C2),
-                  width: 2,
-                ),
-              ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-              isDense: true,
-              
-            ),
-            style: const TextStyle(fontFamily: 'inter'),
-          ),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: 3,
-            margin: const EdgeInsets.only(top: 2),
-            decoration: BoxDecoration(
-              color: (isPasswordValid && isNumberValid && isSpecialCharValid)
-                  ? Colors.green
-                  : Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-        ],
-      ),
-    ),
-    const SizedBox(width: 12),
-    Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Confirm password',
-            style: TextStyle(
-              color: Color(0xff69696b),
-              fontFamily: 'inter',
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 4),
-          SizedBox(
-            height: 45,
-            child: TextField(
-              controller: confirmPasswordController,
-              focusNode: _confirmPasswordFocusNode,
-              obscureText: true,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: _isConfirmPasswordFocused ? Colors.white : const Color(0xFFF2F2F2),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(
-                    color: Color(0xFF6A42C2),
-                    width: 2,
-                  ),
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-                isDense: true,
-              ),
-              style: const TextStyle(fontFamily: 'inter'),
-            ),
-          ),
-        ],
-      ),
-    ),
-  ],
-),
+                      // Password and Confirm Password
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Password',
+                                  style: TextStyle(
+                                    color: Color(0xff69696b),
+                                    fontFamily: 'inter',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                TextField(
+                                  controller: passwordController,
+                                  focusNode: _passwordFocusNode,
+                                  obscureText: true,
+                                  onChanged: _validatePassword,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor:
+                                        _isPasswordFocused
+                                            ? Colors.white
+                                            : const Color(0xFFF2F2F2),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: BorderSide.none,
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      borderSide: const BorderSide(
+                                        color: Color(0xFF6A42C2),
+                                        width: 2,
+                                      ),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                      horizontal: 12,
+                                    ),
+                                    isDense: true,
+                                  ),
+                                  style: const TextStyle(fontFamily: 'inter'),
+                                ),
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  height: 3,
+                                  margin: const EdgeInsets.only(top: 2),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        (isPasswordValid &&
+                                                isNumberValid &&
+                                                isSpecialCharValid)
+                                            ? Colors.green
+                                            : Colors.grey[300],
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Confirm password',
+                                  style: TextStyle(
+                                    color: Color(0xff69696b),
+                                    fontFamily: 'inter',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                SizedBox(
+                                  height: 45,
+                                  child: TextField(
+                                    focusNode: _confirmPasswordFocusNode,
+                                    obscureText: true,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor:
+                                          _isConfirmPasswordFocused
+                                              ? Colors.white
+                                              : const Color(0xFFF2F2F2),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFF6A42C2),
+                                          width: 2,
+                                        ),
+                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 14,
+                                            horizontal: 12,
+                                          ),
+                                      isDense: true,
+                                    ),
+                                    style: const TextStyle(fontFamily: 'inter'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 8),
                       // Password requirements
                       Padding(
@@ -457,34 +502,61 @@ Row(
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.check_circle,
-                                    color: isPasswordValid ? Colors.green : Colors.grey, size: 18),
+                                Icon(
+                                  Icons.check_circle,
+                                  color:
+                                      isPasswordValid
+                                          ? Colors.green
+                                          : Colors.grey,
+                                  size: 18,
+                                ),
                                 const SizedBox(width: 6),
                                 const Text(
                                   '8 characters minimum',
-                                  style: TextStyle(fontSize: 14, fontFamily: 'inter'),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'inter',
+                                  ),
                                 ),
                               ],
                             ),
                             Row(
                               children: [
-                                Icon(Icons.check_circle,
-                                    color: isNumberValid ? Colors.green : Colors.grey, size: 18),
+                                Icon(
+                                  Icons.check_circle,
+                                  color:
+                                      isNumberValid
+                                          ? Colors.green
+                                          : Colors.grey,
+                                  size: 18,
+                                ),
                                 const SizedBox(width: 6),
                                 const Text(
                                   'at least one number',
-                                  style: TextStyle(fontSize: 14, fontFamily: 'inter'),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'inter',
+                                  ),
                                 ),
                               ],
                             ),
                             Row(
                               children: [
-                                Icon(Icons.check_circle,
-                                    color: isSpecialCharValid ? Colors.green : Colors.grey, size: 18),
+                                Icon(
+                                  Icons.check_circle,
+                                  color:
+                                      isSpecialCharValid
+                                          ? Colors.green
+                                          : Colors.grey,
+                                  size: 18,
+                                ),
                                 const SizedBox(width: 6),
                                 const Text(
                                   'at least one special character',
-                                  style: TextStyle(fontSize: 14, fontFamily: 'inter'),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: 'inter',
+                                  ),
                                 ),
                               ],
                             ),
@@ -497,9 +569,7 @@ Row(
                           width: 374,
                           height: 60,
                           child: ElevatedButton(
-                            onPressed: () {
-                              // Add sign up logic here
-                            },
+                            onPressed: _submitData,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF6A42C2),
                               shape: RoundedRectangleBorder(
@@ -525,7 +595,11 @@ Row(
                           child: Text.rich(
                             TextSpan(
                               text: 'By signing up, you agree to our ',
-                              style: const TextStyle(fontSize: 13, color: Color(0xff919191), fontFamily: 'inter'),
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Color(0xff919191),
+                                fontFamily: 'inter',
+                              ),
                               children: [
                                 TextSpan(
                                   text: 'Terms & Conditions',
@@ -542,7 +616,9 @@ Row(
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),
-                                const TextSpan(text: ', and confirm that you\'re over 18.'),
+                                const TextSpan(
+                                  text: ', and confirm that you\'re over 18.',
+                                ),
                               ],
                             ),
                             textAlign: TextAlign.center,
@@ -560,4 +636,25 @@ Row(
       ),
     );
   }
+  Future<void> _submitData() async {
+  final firstName = firstNameController.text.trim();
+  final lastName = lastNameController.text.trim();
+  final phone = phoneController.text.trim();
+  final password = passwordController.text.trim();
+
+
+  if (firstName.isEmpty ||   lastName.isEmpty || password.isEmpty || phone.isEmpty  ) return;
+
+  final response = await Supabase.instance.client
+      .from('Customers')
+      .insert({
+        'first_name': firstName,
+        'last_name': lastName,
+        'phone_number': phone,
+        'password': password,
+      });
+
+  // Optionally handle response or show a message
 }
+}
+
