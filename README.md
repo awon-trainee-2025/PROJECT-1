@@ -1,48 +1,85 @@
-# Flutter App Design & Implementation
+#  🚗 Masaar - مسار
 
-## Overview
-In this group project, you will design and implement a different app of your choice using Flutter. This project is an opportunity for you to showcase your creativity and apply various Flutter concepts and widgets to create a unique and engaging user experience.
+## Simplifying Daily Commutes, Connect with Nearby Drivers for Effortless City Travel, Masaar – Your Trusted Route.
 
-## Project proposal:
-1. **Application for tourism**
-2. **Workspace booking app**
-3. **Delivery application**
-4. **Transportation application**
-5. **Online courses application**
+##  🎯 Purpose
+Masaar (مسار) is an application made to digitize and make daily travel easier. It helps people get where they need to go quickly and safely by connecting them with nearby drivers. The goal is to provide a simple, reliable, and easy way to travel in cities.
 
-You are required to implement at least **five different UIs** and use the following mandatory concepts:
+## ✨ Features
+- **🔐 User Account Creation**
+   registration and login process allowing users to create and manage their personal accounts.
 
-## Mandatory Requirements
-1. **Clean structure folders/files**: You must to divide the projects into folders/files.
-2. **using CRUD system**: Create new data (insert), Read all data, Update data, Delete data.
+- **🚕 Ride Booking System**
+   ride scheduling with options for immediate or future bookings.
 
-## Bonus Points
-- **Another packages**: Use another packages other than that we worked with.
-- **Different application idea**: Design and implementation another project idea. 
+- **🗺️ Real-Time Map Tracking**
+   Live GPS-based tracking that lets users monitor their driver's location and estimated arrival time in real-time.
 
-## Guidelines
-- This is a **group project**; each group is expected to work independently.
-- You are encouraged to explore and demonstrate your creativity. Your design and implementation should reflect your unique vision and skills.
+- **💬 In-App Driver Chat**
+   Instant messaging feature enabling communication between users and drivers during a ride.
 
-## Submission Requirements
-- **Screenshots/Videos**: Include clear screenshots or a short video of your project demonstrating its key features and UI.
-- **Documented README File**: Your project should include a README file that clearly describes:
-  - The purpose and features of your app.
-  - The widgets and external packages used.
-  - Instructions for running the app.
-  - Any additional notes or explanations about your design choices.
+- **💳 Integrated Payment Gateway (Moyasar)**
+   Secure and flexible payment processing supporting multiple methods including credit/debit cards, and Apple Pay.
 
+- **👛 Digital Wallet & Balance Top-Up**
+   Built-in wallet feature allowing users to add funds, and make quick, hassle-free payments.
 
-## Resources
-- **Widgets Documentation & Examples**: [Material Design Components](https://m3.material.io/components/badges/overview)
-- **External UI Packages**: [Flutter Gems](https://fluttergems.dev/)
-- **Color Palettes**: [Color Hunt](https://colorhunt.co/)
-- **Design Inspiration**: Figma Community, Pinterest, Dribbble, Mobbin
+- **⭐ User Ratings & Feedback**
+   Post-ride rating and review system to ensure service quality and accountability from drivers.
 
-## Deadline
-- **Submission Deadline**: 16 June, 9:00 AM
+## 🚀 How to install & run Masaar
+> ⚠️ [!IMPORTANT]\
+> Before You Run the App, Make Sure You Have:
+> - Flutter SDK installed (version listed in pubspec.yaml)
+> - Dart SDK (comes with Flutter)
+> - Android Studio
+> - A connected device or emulator
+> - Internet connection for fetching dependencies
 
-## Submission
-Ensure that your project meets all the mandatory requirements. Submit your project files along with a brief documentation describing the features and functionalities you've implemented.
+1. Clone the Repository
+    - git clone https://github.com/Deemabakhyer/PROJECT-1-Masaar.git
+    - cd PROJECT-1-Masaar
+    - code .
+2. Install Dependencies
+    - flutter pub get
+3. Run the App
+    - flutter run
+4. (Optional) Build the App
+    - For Android:
+        - flutter build apk
+    - For iOS
+        - flutter build ios
+        
+## 💡 Watch this tutorial on how to navigate through Masaar!
+work in progres....
 
-Good luck, and have fun creating your app! 🎨📱
+## 🎨 UI/UX Design
+View the complete design on [Figma](https://www.figma.com/design/synPECe3VTrOajQMPtQPWh/Masaar?node-id=0-1&t=nqYHZSD7lLfXy7Ss-1).
+
+##  📦 External Packages
+- [Flutter Map](https://pub.dev/packages/flutter_map) – Map rendering
+- [Geolocator](https://pub.dev/packages/geolocator) – Location tracking
+- [latlong2](https://pub.dev/packages/latlong2) – Geolocation data structure
+- [Moyasar](https://pub.dev/packages/moyasar) – Payment gateway integration
+- [Flutter Chat UI](https://pub.dev/packages/flutter_chat_ui) – In-app chat interface
+- [GetX](https://pub.dev/packages/get) – State management and routing
+- [Smooth Page Indicator](https://pub.dev/packages/smooth_page_indicator) – Page transitions
+- [Shared Preferences](https://pub.dev/packages/shared_preferences) – Local data storage
+- [Supabase Flutter](https://pub.dev/packages/supabase_flutter) – Backend services
+
+## 🧩 Custom Widgets
+- Custom Button  
+- Custom Draggable Scrollable Sheet  
+- Custom Search Bar  
+- Custom Text Field  
+- Bottom Navigation Bar  
+
+## ⚙️ Known Issues (work in progress)
+
+## 📞 Contact Our Team
+For questions, feedback, or collaboration, feel free to reach out to our team:
+- 👩‍💻 [@Deemabakhyer](https://github.com/Deemabakhyer)
+- 👨‍💻 [@AhmadAbdullah123](https://github.com/AhmadAbdullah123)
+- 👩‍💻 [@MawadaS](https://github.com/MawadaS)
+- 👩‍💻 [@MawadaS](https://github.com/MawadaS)
+
