@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:masaar/controllers/location_controller.dart';
-import 'package:masaar/widgets/custom_button.dart';
-import 'package:masaar/widgets/custom_search_bar.dart';
+import 'package:masaar/widgets/custom%20widgets/custom_button.dart';
+import 'package:masaar/widgets/custom%20widgets/custom_search_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        //Map 
+        //Map
         FlutterMap(
           options: MapOptions(
             initialCenter: LatLng(21.4167, 39.8167),
@@ -236,7 +236,7 @@ class Routeconfirmation extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          //Map 
+          //Map
           FlutterMap(
             options: MapOptions(
               initialCenter: LatLng(21.4167, 39.8167), // Wadi Makkah
@@ -439,7 +439,6 @@ class Destinationconfirmation extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    
                     Container(
                       width: 40,
                       height: 4,
@@ -451,7 +450,7 @@ class Destinationconfirmation extends StatelessWidget {
                     ),
                     const Text(
                       "Wadi Makkah Company",
-                      style:  TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 28,
                         fontWeight: FontWeight.w600,

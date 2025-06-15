@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masaar/models/ride_logs_model.dart';
-import 'package:masaar/widgets/custom_ride_log.dart';
+import 'package:masaar/widgets/custom%20widgets/custom_ride_log.dart';
 
 class RideLogsView extends StatelessWidget {
   RideLogsView({super.key});
