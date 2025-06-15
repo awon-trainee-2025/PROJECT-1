@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masaar/widgets/custom_button.dart';
+import 'package:get/get.dart';
 
 class AddLocationPage extends StatefulWidget {
   final Map<String, dynamic>? initialData;
@@ -49,38 +50,106 @@ class AddLocationPageState extends State<AddLocationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(leading: BackButton(), title: Text('Add a Location')),
+      appBar: AppBar(
+        leading: TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: const Size(0, 0),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: Image.asset('images/back_button.png'),
+          ),
+        ),
+        title: const Text(
+          'Add a location',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              Text('Location name', style: TextStyle(color: _labelColor)),
+              Text(
+                'Location name',
+                style: TextStyle(
+                  color: _labelColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(hintText: 'College, Home'),
+                decoration: InputDecoration(
+                  hintText: 'College, Home',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
               SizedBox(height: 16),
-              Text('Address', style: TextStyle(color: _labelColor)),
+              Text(
+                'Address',
+                style: TextStyle(
+                  color: _labelColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               TextFormField(
                 controller: _addressController,
-                decoration: InputDecoration(hintText: 'Address'),
+                decoration: InputDecoration(
+                  hintText: 'Al-Madinah Al-Munawarah, 12345',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
               SizedBox(height: 16),
-              Text('City', style: TextStyle(color: _labelColor)),
+              Text(
+                'City',
+                style: TextStyle(
+                  color: _labelColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               TextFormField(
                 controller: _cityController,
-                decoration: InputDecoration(hintText: 'City'),
+                decoration: InputDecoration(
+                  hintText: 'Medina',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
               SizedBox(height: 16),
-              Text('Additional details', style: TextStyle(color: _labelColor)),
+              Text(
+                'Additional details',
+                style: TextStyle(
+                  color: _labelColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               TextFormField(
                 controller: _detailsController,
-                decoration: InputDecoration(hintText: 'Gate 2, Building B'),
+                decoration: InputDecoration(
+                  hintText: 'Gate 2, Building B',
+                  border: OutlineInputBorder(),
+                ),
               ),
               SizedBox(height: 32),
               CustomButton(

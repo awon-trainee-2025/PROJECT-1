@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:masaar/views/account_view.dart';
+import 'package:masaar/views/account_page.dart';
 import 'package:masaar/views/home_page.dart';
 import 'package:masaar/views/ride_logs_views.dart';
 // import 'package:masaar/views/home_page.dart';
@@ -32,7 +32,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // put your pages here
     HomePage(),
     RideLogsView(),
-    AccountView(),
+    AccountPage(),
   ];
 
   final List<Map<String, dynamic>> _navItems = [

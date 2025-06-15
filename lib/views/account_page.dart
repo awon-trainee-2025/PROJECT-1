@@ -5,8 +5,8 @@ import 'package:masaar/views/saved_locations.dart';
 import 'package:masaar/widgets/settings_widgets/settings_items.dart';
 import 'package:masaar/widgets/settings_widgets/settings_header.dart';
 
-class AccountView extends StatelessWidget {
-  const AccountView({super.key});
+class AccountPage extends StatelessWidget {
+  const AccountPage({super.key});
 
   @override
   Widget build(BuildContext context) {

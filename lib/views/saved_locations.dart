@@ -151,11 +151,12 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
           child: SizedBox(
-            height: 56,
-            width: 56,
+            height: 50,
+            width: 50,
             child: Image.asset('images/back_button.png'),
           ),
         ),
+
         title: const Text(
           'Saved Locations',
           style: TextStyle(
