@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:masaar/views/personal_information.dart';
-import 'package:masaar/widgets/settings_header.dart';
-import 'package:masaar/widgets/settings_items.dart';
+import 'package:masaar/views/saved_locations.dart';
+import 'package:masaar/widgets/settings_widgets/settings_items.dart';
+import 'package:masaar/widgets/settings_widgets/settings_header.dart';
 
 class AccountView extends StatelessWidget {
   const AccountView({super.key});
@@ -68,7 +69,13 @@ class AccountView extends StatelessWidget {
                 SettingsItem(
                   image: Image.asset('images/location.png'),
                   title: 'Saved Locations',
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(
+                      SavedLocationsPage(),
+                      transition: Transition.rightToLeft,
+                      duration: Duration(milliseconds: 300),
+                    );
+                  },
                 ),
                 SizedBox(height: 10),
                 // header

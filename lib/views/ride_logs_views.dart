@@ -37,7 +37,7 @@ class RideLogsView extends StatelessWidget {
     RideLogsModel(
       destination: 'CRR4+4X9، حسان بن ثابت، البيبان، مكة 24231',
       status: '',
-      date: '05 april',
+      date: '05 august',
       price: '15',
       time: '10 pm',
     ),
@@ -98,13 +98,6 @@ class RideLogsView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 18.0, bottom: 6),
-                  child: Text(
-                    'Past Rides',
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
-                  ),
-                ),
                 const Divider(thickness: 1, indent: 18, endIndent: 18),
 
                 ...monthOrder

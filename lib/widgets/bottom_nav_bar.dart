@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masaar/views/account_view.dart';
+import 'package:masaar/views/home_page.dart';
+import 'package:masaar/views/ride_logs_views.dart';
 // import 'package:masaar/views/home_page.dart';
 
 // Main App
@@ -26,11 +28,11 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
+  final List<Widget> _pages = [
     // put your pages here
-    // HomePage(),
-    // Ridepage(),
-    // AccountPage(),
+    HomePage(),
+    RideLogsView(),
+    AccountView(),
   ];
 
   final List<Map<String, dynamic>> _navItems = [

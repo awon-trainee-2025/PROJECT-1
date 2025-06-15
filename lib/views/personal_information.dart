@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:masaar/widgets/custom_button.dart';
 
 class PersonalInformation extends StatelessWidget {
   const PersonalInformation({super.key});
@@ -30,7 +31,7 @@ class PersonalInformation extends StatelessWidget {
           ),
         ),
         title: const Text(
-          'Personal info',
+          'Personal ',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -119,24 +120,13 @@ class PersonalInformation extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6A3DE8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
+                child: CustomButton(
+                  text: 'Save',
                   onPressed: () {
-                    print('Save changes tapped');
+                    // Handle save action
+                    print('Save button pressed');
                   },
-                  child: const Text(
-                    'Save changes',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
+                  isActive: true,
                 ),
               ),
               const SizedBox(height: 24),
