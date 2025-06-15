@@ -78,7 +78,7 @@ flutter:
     - images\delete.png
     - images\back_button.png
     - images\profile_upload.png
-    - images\undraw_two-factor-authentication_8tds.png
+    - images\auth.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

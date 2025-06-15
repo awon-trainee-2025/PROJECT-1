@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:masaar/main.dart';
+import 'package:masaar/views/Welcome/auth/otp_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -42,9 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 40.0),
-                // child: Image.asset(
-                //   'images/undraw_two-factor-authentication_8tds.png',
-                // ),
+                child: Image.asset('../images/auth.png'),
               ),
             ),
           ),
@@ -150,15 +149,36 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () async {
                               final email = emailController.text.trim();
 
-                              await supabase.auth.signInWithOtp(
-                                email: emailController.text,
-                              );
+                              if (email.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please enter your email'),
+                                  ),
+                                );
+                                return;
+                              }
 
-                              Navigator.pushNamed(
-                                context,
-                                '/otp',
-                                arguments: email,
-                              );
+                              try {
+                                await supabase.auth.signInWithOtp(
+                                  email: email,
+                                  shouldCreateUser: false,
+                                );
+
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => OtpScreen(email: email),
+                                  ),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Failed to send OTP: ${e.toString()}',
+                                    ),
+                                  ),
+                                );
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFF6A42C2),
