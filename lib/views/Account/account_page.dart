@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:masaar/views/personal_information.dart';
-import 'package:masaar/views/saved_locations.dart';
+import 'package:masaar/views/Account/personal_information.dart';
+import 'package:masaar/views/Account/saved_locations.dart';
 import 'package:masaar/widgets/settings_widgets/settings_items.dart';
 import 'package:masaar/widgets/settings_widgets/settings_header.dart';
 

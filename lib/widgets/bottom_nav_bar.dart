@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:masaar/views/account_page.dart';
-import 'package:masaar/views/home_page.dart';
-import 'package:masaar/views/ride_logs_views.dart';
+import 'package:masaar/views/Account/account_page.dart';
+import 'package:masaar/views/Home/home_page.dart';
+import 'package:masaar/views/Rides/ride_logs_views.dart';
 // import 'package:masaar/views/home_page.dart';
 
 // Main App
