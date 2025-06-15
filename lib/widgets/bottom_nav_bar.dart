@@ -31,7 +31,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // HomePage(),
     // Ridepage(),
     // AccountPage(),
-    AccountView(),
   ];
 
   final List<Map<String, dynamic>> _navItems = [
