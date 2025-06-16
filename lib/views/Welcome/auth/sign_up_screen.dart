@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:masaar/main.dart';
 import 'package:masaar/views/Welcome/auth/otp_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -631,9 +632,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'password': passwordController.text,
     });
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => OtpScreen(email: email)),
-    );
+    Get.off(MaterialPageRoute(builder: (context) => OtpScreen(email: email)));
 
     // Optionally handle response or show a message
   }

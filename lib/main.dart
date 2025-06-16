@@ -4,6 +4,8 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:masaar/views/Home/home_page.dart';
 import 'package:masaar/views/Welcome/auth/login_screen.dart';
 import 'package:masaar/views/Welcome/auth/sign_up_screen.dart';
+import 'package:masaar/views/Welcome/onBoarding/on_boarding_screen.dart';
+import 'package:masaar/views/Welcome/onBoarding/splash_screen.dart';
 import 'package:masaar/widgets/custom%20widgets/bottom_nav_bar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      home: const OnBoardingScreen(),
       getPages: [
         GetPage(name: '/Home', page: () => HomePage()),
         GetPage(name: '/route', page: () => RoutePage()),

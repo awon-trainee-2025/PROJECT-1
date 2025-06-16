@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:masaar/main.dart';
 import 'package:masaar/views/Welcome/auth/otp_screen.dart';
+import 'package:masaar/views/Welcome/auth/sign_up_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -43,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 40.0),
-                child: Image.asset('../images/auth.png'),
+                // child: SvgPicture.asset('images/onboarding4.svg'),
               ),
             ),
           ),
@@ -164,12 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   shouldCreateUser: false,
                                 );
 
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => OtpScreen(email: email),
-                                  ),
-                                );
+                                Get.to(() => OtpScreen(email: email));
                               } catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -237,7 +235,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 70.25,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/signup');
+                            Get.to(() => const SignUpScreen());
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF6A42C2),
