@@ -167,7 +167,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   shouldCreateUser: false,
                                 );
 
-                                Get.to(() => OtpScreen(email: email));
+                                Get.to(
+                                  () =>
+                                      OtpScreen(email: email, isNewUser: false),
+                                );
                               } catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:masaar/views/Home/home_page.dart';
 import 'package:masaar/views/Welcome/auth/login_screen.dart';
+import 'package:masaar/widgets/custom%20widgets/bottom_nav_bar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OtpScreen extends StatefulWidget {
   final String email;
+  final bool isNewUser;
 
-  const OtpScreen({Key? key, required this.email}) : super(key: key);
+  const OtpScreen({Key? key, required this.email, required this.isNewUser})
+    : super(key: key);
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -247,30 +251,59 @@ class _OtpScreenState extends State<OtpScreen> {
                         }
 
                         try {
-                          final response = await supabase.auth.verifyOTP(
-                            type: OtpType.signup,
-                            token: _otpCode,
-                            email: widget.email.trim(),
-                          );
+                          final supabase = Supabase.instance.client;
+                          late final AuthResponse response;
 
-                          if (response.session != null &&
-                              response.user != null) {
-                            // OTP verified successfully, navigate
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
-                              (route) => false,
+                          if (widget.isNewUser) {
+                            response = await supabase.auth.verifyOTP(
+                              type: OtpType.signup,
+                              token: _otpCode,
+                              email: widget.email.trim(),
                             );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'OTP verification failed. Please check the code and try again.',
+
+                            if (response.session != null &&
+                                response.user != null) {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginScreen(),
                                 ),
-                              ),
+                                (route) => false,
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'OTP verification failed. Please check the code and try again.',
+                                  ),
+                                ),
+                              );
+                            }
+                          } else {
+                            response = await supabase.auth.verifyOTP(
+                              type: OtpType.email,
+                              token: _otpCode,
+                              email: widget.email.trim(),
                             );
+
+                            if (response.session != null &&
+                                response.user != null) {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BottomNavBar(),
+                                ),
+                                (route) => false,
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'OTP verification failed. Please check the code and try again.',
+                                  ),
+                                ),
+                              );
+                            }
                           }
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -309,6 +342,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 24),
             ],
           ),

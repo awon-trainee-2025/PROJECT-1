@@ -2,20 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:masaar/views/Account/account_page.dart';
 import 'package:masaar/views/Home/home_page.dart';
 import 'package:masaar/views/Rides/ride_logs_views.dart';
-// import 'package:masaar/views/home_page.dart';
-
-// Main App
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: BottomNavBar(),
-    );
-  }
-}
 
 // BottomNavBar Scaffold
 class BottomNavBar extends StatefulWidget {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:masaar/main.dart';
 import 'package:masaar/views/Welcome/auth/otp_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -621,19 +620,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
         email.isEmpty)
       return;
 
-    final response = await supabase.auth.signUp(
-      password: passwordController.text,
-      email: emailController.text,
-    );
-    await supabase.from('Customers').insert({
-      'first_name': firstNameController.text,
-      'last_name': lastNameController.text,
-      'email': emailController.text,
-      'password': passwordController.text,
-    });
+    try {
+      final response = await supabase.auth.signUp(
+        password: passwordController.text,
+        email: emailController.text,
+      );
+      if (response.user == null) {
+        throw Exception('Sign up failed');
+      }
 
-    Get.off(MaterialPageRoute(builder: (context) => OtpScreen(email: email)));
+      await supabase.from('Customers').insert({
+        'first_name': firstNameController.text,
+        'last_name': lastNameController.text,
+        'email': emailController.text,
+        'password': passwordController.text,
+      });
 
-    // Optionally handle response or show a message
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => OtpScreen(email: email, isNewUser: true),
+        ),
+      );
+    } catch (e) {
+      throw Exception('Sign up failed: $e');
+    }
   }
 }
