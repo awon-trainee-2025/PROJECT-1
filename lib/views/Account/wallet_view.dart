@@ -210,7 +210,11 @@ class _WalletViewState extends State<WalletView> {
 
             const Spacer(),
 
-            CustomButton(text: 'Add a card', isActive: true, onPressed: () {}),
+            CustomButton(
+              text: 'Add a new card',
+              isActive: true,
+              onPressed: () {},
+            ),
             const SizedBox(height: 24),
           ],
         ),
