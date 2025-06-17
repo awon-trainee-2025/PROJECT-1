@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:masaar/views/Account/wallet_view.dart';
 import 'package:masaar/views/Home/home_page.dart';
 import 'package:masaar/views/Welcome/auth/login_screen.dart';
 import 'package:masaar/views/Welcome/auth/sign_up_screen.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const OnBoardingScreen(),
+      home: const WalletView(),
       getPages: [
         GetPage(name: '/Home', page: () => HomePage()),
         GetPage(name: '/route', page: () => RoutePage()),
