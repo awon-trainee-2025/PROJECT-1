@@ -32,7 +32,7 @@ class AccountController extends GetxController {
 
       final response =
           await supabase
-              .from('Customers')
+              .from('customers')
               .select()
               .eq('email', user.email!)
               .maybeSingle();
@@ -69,7 +69,7 @@ class AccountController extends GetxController {
       };
 
       await supabase
-          .from('Customers')
+          .from('customers')
           .update(updatedData)
           .eq('email', user.email!);
 

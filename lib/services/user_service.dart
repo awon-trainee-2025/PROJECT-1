@@ -10,7 +10,7 @@ class UserService {
 
     final response =
         await supabase
-            .from('Customers')
+            .from('customers')
             .select(
               'customer_id, first_name, last_name, email, phone_number, profile_image',
             )
