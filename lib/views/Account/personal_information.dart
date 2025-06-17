@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:masaar/controllers/account_controller.dart';
 import 'package:masaar/widgets/custom%20widgets/custom_button.dart';
 
 class PersonalInformation extends StatelessWidget {
-  const PersonalInformation({super.key});
+  PersonalInformation({Key? key}) : super(key: key);
+
+  final AccountController accountController = Get.put(AccountController());
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController firstNameController = TextEditingController();
-    final TextEditingController lastNameController = TextEditingController();
-    final TextEditingController phoneController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
+    if (accountController.profile.value == null) {
+      accountController.loadUserProfile();
+    }
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -45,93 +47,111 @@ class PersonalInformation extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 24),
-                    // Your form fields and images here
-                    InkWell(
-                      onTap: () => print('Image tapped'),
-                      child: Image.asset(
-                        'images/profile_upload.png',
-                        height: 100,
-                        width: 100,
-                        fit: BoxFit.cover,
+        child: Obx(() {
+          if (accountController.profile.value == null) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 24),
+                      InkWell(
+                        onTap: () => print('Image tapped'),
+                        child: Image.asset(
+                          'images/profile_upload.png',
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'Add a profile picture so drivers can recognize you',
-                      style: TextStyle(
-                        color: Color(0xFF919191),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Add a profile picture so drivers can recognize you',
+                        style: TextStyle(
+                          color: Color(0xFF919191),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 32),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: firstNameController,
-                            decoration: const InputDecoration(
-                              labelText: 'First name',
-                              border: OutlineInputBorder(),
+                      const SizedBox(height: 32),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: accountController.firstNameController,
+                              decoration: const InputDecoration(
+                                labelText: 'First name',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: TextField(
-                            controller: lastNameController,
-                            decoration: const InputDecoration(
-                              labelText: 'Last name',
-                              border: OutlineInputBorder(),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: TextField(
+                              controller: accountController.lastNameController,
+                              decoration: const InputDecoration(
+                                labelText: 'Last name',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: accountController.phoneController,
+                        keyboardType: TextInputType.phone,
+                        decoration: const InputDecoration(
+                          labelText: 'Phone number',
+                          border: OutlineInputBorder(),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: phoneController,
-                      keyboardType: TextInputType.phone,
-                      decoration: const InputDecoration(
-                        labelText: 'Phone number',
-                        border: OutlineInputBorder(),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        hintText: 'username@example.com',
-                        border: OutlineInputBorder(),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: accountController.emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          hintText: 'username@example.com',
+                          border: OutlineInputBorder(),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
+                      const SizedBox(height: 24),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: CustomButton(
-                text: 'Save changes',
-                onPressed: () => print('Save button pressed'),
-                isActive: true,
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: CustomButton(
+                  text: 'Save changes',
+                  onPressed: () async {
+                    if (accountController.firstNameController.text.isEmpty ||
+                        accountController.emailController.text.isEmpty) {
+                      Get.snackbar('Error', 'Please fill all required fields');
+                      return;
+                    }
+
+                    await accountController.updateProfile();
+                    Get.snackbar(
+                      'Success',
+                      'Profile updated successfully',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  },
+                  isActive: true,
+                ),
               ),
-            ),
-            const SizedBox(height: 24), // Bottom padding
-          ],
-        ),
+              const SizedBox(height: 24),
+            ],
+          );
+        }),
       ),
     );
   }

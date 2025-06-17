@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:masaar/controllers/auth_controller.dart';
 import 'package:masaar/views/Account/wallet_view.dart';
 import 'package:masaar/views/Home/home_page.dart';
 import 'package:masaar/views/Welcome/auth/login_screen.dart';
@@ -19,6 +21,9 @@ void main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyc2N6aXRua3Zqc3Rlcnp4cXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwMzk0MDEsImV4cCI6MjA2MjYxNTQwMX0.e9JkJnDntFXaW5zgCcS-A1ebMuZOfmFW59AADrB3OM4',
   );
+
+  Get.put(AuthController());
+
   runApp(MyApp());
 }
 
@@ -31,7 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const WalletView(),
+      home: const StartupScreen(),
       getPages: [
         GetPage(name: '/Home', page: () => HomePage()),
         GetPage(name: '/route', page: () => RoutePage()),
@@ -41,6 +46,34 @@ class MyApp extends StatelessWidget {
           page: () => const Destinationconfirmation(),
         ),
       ],
+    );
+  }
+}
+
+class StartupScreen extends StatelessWidget {
+  const StartupScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final session = Supabase.instance.client.auth.currentSession;
+
+    return FutureBuilder(
+      future: Future.delayed(
+        const Duration(milliseconds: 500),
+      ), // optional splash delay
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (session != null && session.user != null) {
+          return const BottomNavBar();
+        } else {
+          return const LoginScreen();
+        }
+      },
     );
   }
 }
