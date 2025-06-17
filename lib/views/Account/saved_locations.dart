@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:masaar/widgets/custom%20widgets/custom_button.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'add_locations.dart';
 
 class SavedLocationsPage extends StatefulWidget {
@@ -13,12 +14,47 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
 
   final Color iconColor = const Color(0xFF563B9C);
 
+  final supabase = Supabase.instance.client;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLocationsFromDB();
+  }
+
+  Future<void> fetchLocationsFromDB() async {
+    try {
+      final data = await supabase.from('locations').select();
+
+      setState(() {
+        locations =
+            (data as List<dynamic>).map<Map<String, String>>((item) {
+              return {
+                'name': item['location_name']?.toString() ?? '',
+                'address': item['address']?.toString() ?? '',
+              };
+            }).toList();
+      });
+    } catch (e) {
+      print('Error fetching locations: $e');
+    }
+  }
+
   void _addLocation(Map<String, String> location) {
     setState(() {
       locations.add(location);
     });
   }
 
+  /*
+      Make this function show two buttons
+      1- Edit --> Allow the user to edit the location
+      2- Delete --> Allow the user to delete the location
+      if the user clicks on the delete button, remove the location from the list
+      and also delete it from the database
+
+      if the user clicks on the edit button, allow the user to edit the location
+  */
   void _editLocation(int index) async {
     final result = await Navigator.push(
       context,
@@ -156,7 +192,6 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
             child: Image.asset('images/back_button.png'),
           ),
         ),
-
         title: const Text(
           'Saved Locations',
           style: TextStyle(
@@ -165,7 +200,6 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
             color: Colors.black,
           ),
         ),
-
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,

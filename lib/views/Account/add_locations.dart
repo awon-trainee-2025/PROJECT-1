@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masaar/widgets/custom%20widgets/custom_button.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddLocationPage extends StatefulWidget {
   final Map<String, dynamic>? initialData;
@@ -19,6 +20,7 @@ class AddLocationPageState extends State<AddLocationPage> {
   late final TextEditingController _detailsController;
 
   static const Color _labelColor = Color(0xFF6A42C2);
+  final supabase = Supabase.instance.client;
 
   @override
   void initState() {
@@ -44,6 +46,41 @@ class AddLocationPageState extends State<AddLocationPage> {
     _cityController.dispose();
     _detailsController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveLocationToDB() async {
+    try {
+      final response =
+          await supabase.from('locations').insert({
+            'location_name': _nameController.text,
+            'address': _addressController.text,
+            'city': _cityController.text,
+            'additional_details': _detailsController.text,
+            'created_at': DateTime.now().toIso8601String(),
+          }).select();
+
+      if (response == null || response.isEmpty) {
+        _showErrorDialog('Failed to add location.');
+      } else {
+        Get.back();
+      }
+    } catch (e) {
+      _showErrorDialog(e.toString());
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: const Text('Error'),
+            content: Text(message),
+            actions: [
+              TextButton(onPressed: () => Get.back(), child: const Text('OK')),
+            ],
+          ),
+    );
   }
 
   @override
@@ -74,7 +111,6 @@ class AddLocationPageState extends State<AddLocationPage> {
             color: Colors.black,
           ),
         ),
-
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
@@ -95,13 +131,13 @@ class AddLocationPageState extends State<AddLocationPage> {
               ),
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'College, Home',
                   border: OutlineInputBorder(),
                 ),
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Address',
                 style: TextStyle(
@@ -112,13 +148,13 @@ class AddLocationPageState extends State<AddLocationPage> {
               ),
               TextFormField(
                 controller: _addressController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Al-Madinah Al-Munawarah, 12345',
                   border: OutlineInputBorder(),
                 ),
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'City',
                 style: TextStyle(
@@ -129,13 +165,13 @@ class AddLocationPageState extends State<AddLocationPage> {
               ),
               TextFormField(
                 controller: _cityController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Medina',
                   border: OutlineInputBorder(),
                 ),
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 'Additional details',
                 style: TextStyle(
@@ -146,23 +182,18 @@ class AddLocationPageState extends State<AddLocationPage> {
               ),
               TextFormField(
                 controller: _detailsController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Gate 2, Building B',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
               CustomButton(
                 text: 'Save location',
                 isActive: true,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    Navigator.pop(context, {
-                      'name': _nameController.text,
-                      'address': _addressController.text,
-                      'city': _cityController.text,
-                      'details': _detailsController.text,
-                    });
+                    _saveLocationToDB();
                   }
                 },
               ),
