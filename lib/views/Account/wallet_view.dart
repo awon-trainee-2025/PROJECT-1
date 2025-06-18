@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:masaar/controllers/settings_controllers/account_controller.dart';
 import 'package:masaar/models/wallet_model.dart';
+import 'package:masaar/views/Account/active_cards.dart';
+import 'package:masaar/views/Account/add_new_card.dart';
 import 'package:masaar/widgets/custom%20widgets/custom_button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class WalletView extends StatefulWidget {
-  const WalletView({Key? key}) : super(key: key);
+  final String firstName;
+  final String lastName;
+
+  const WalletView({Key? key, required this.firstName, required this.lastName})
+    : super(key: key);
 
   @override
   State<WalletView> createState() => _WalletViewState();
 }
 
 class _WalletViewState extends State<WalletView> {
+  final AccountController accountController = Get.put(AccountController());
   final PageController _controller = PageController(viewportFraction: 0.85);
   int _currentPage = 0;
   List<Wallet> wallets = [];
@@ -64,6 +72,10 @@ class _WalletViewState extends State<WalletView> {
 
   @override
   Widget build(BuildContext context) {
+    if (accountController.profile.value == null) {
+      accountController.loadUserProfile();
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -224,12 +236,26 @@ class _WalletViewState extends State<WalletView> {
                                           ),
                                         ),
                                         const Spacer(),
-                                        Text(
-                                          '${card.firstName ?? ''} ${card.lastName ?? ''}',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                          ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              widget.firstName,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              widget.lastName,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -261,7 +287,9 @@ class _WalletViewState extends State<WalletView> {
                     CustomButton(
                       text: 'Add a new card',
                       isActive: true,
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(AddNewCard());
+                      },
                     ),
                     const SizedBox(height: 24),
                   ],

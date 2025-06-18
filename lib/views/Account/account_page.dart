@@ -83,7 +83,10 @@ class AccountPage extends StatelessWidget {
                     title: 'Wallet',
                     onTap: () {
                       Get.to(
-                        const WalletView(),
+                        WalletView(
+                          firstName: controller.firstNameController.text,
+                          lastName: controller.lastNameController.text,
+                        ),
                         transition: Transition.rightToLeft,
                         duration: const Duration(milliseconds: 300),
                       );
