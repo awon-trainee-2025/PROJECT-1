@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:masaar/controllers/account_controller.dart';
+import 'package:masaar/controllers/settings_controllers/account_controller.dart';
 import 'package:masaar/controllers/auth_controller.dart';
 import 'package:masaar/views/Account/personal_information.dart';
 import 'package:masaar/views/Account/saved_locations.dart';

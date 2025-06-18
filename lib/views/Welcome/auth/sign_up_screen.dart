@@ -629,11 +629,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         throw Exception('Sign up failed');
       }
 
-      await supabase.from('Customers').insert({
+      await supabase.from('customers').insert({
         'first_name': firstNameController.text,
         'last_name': lastNameController.text,
         'email': emailController.text,
         'password': passwordController.text,
+        'customer_id': response.user!.id,
       });
 
       Navigator.of(context).pushReplacement(

@@ -39,28 +39,23 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
     final userId = Get.find<AuthController>().user?.id;
     if (userId == null) return;
 
-    _channel =
-        supabase
-            .channel('locations_channel')
-            .onPostgresChanges(
-              event: PostgresChangeEvent.all,
-              schema: 'public',
-              table: 'locations',
-              filter: PostgresChangeFilter(
-                type: PostgresChangeFilterType.eq,
-                column: 'customer_id',
-                value: userId,
-              ),
-              callback: (payload) {
-                print('Realtime event: ${payload.eventType}');
-                _fetchLocations(); // Refresh data on any change
-              },
-            )
-            .subscribe();
+    _channel = supabase.channel('locations_channel');
+
+    _channel!.onPostgresChanges(
+      event: PostgresChangeEvent.all,
+      schema: 'public',
+      table: 'locations',
+
+      callback: (payload) {
+        _fetchLocations(); // Refresh data on any change
+      },
+    );
+
+    _channel!.subscribe();
   }
 
   Future<void> _fetchLocations() async {
-    final userId = Get.find<AuthController>().user?.id;
+    final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) {
       setState(() => isLoading = false);
       return;

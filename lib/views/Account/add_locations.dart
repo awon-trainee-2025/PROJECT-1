@@ -49,9 +49,16 @@ class AddLocationPageState extends State<AddLocationPage> {
   }
 
   Future<void> _saveLocationToDB() async {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    if (userId == null) {
+      _showErrorDialog('User not authenticated.');
+      return;
+    }
+    debugPrint('User ID: $userId');
     try {
       final response =
           await supabase.from('locations').insert({
+            'customer_id': userId,
             'location_name': _nameController.text,
             'address': _addressController.text,
             'city': _cityController.text,
@@ -192,9 +199,9 @@ class AddLocationPageState extends State<AddLocationPage> {
                 text: 'Save location',
                 isActive: true,
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _saveLocationToDB();
-                  }
+                  _saveLocationToDB();
+                  // if (_formKey.currentState!.validate()) {
+                  // }
                 },
               ),
             ],
