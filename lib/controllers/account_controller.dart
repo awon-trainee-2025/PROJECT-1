@@ -46,13 +46,13 @@ class AccountController extends GetxController {
     }
   }
 
-  void loadProfileIntoFields() {
+  Future<void> loadProfileIntoFields() async {
     final data = profile.value;
     if (data != null) {
-      firstNameController.text = data['first_name'] ?? '';
-      lastNameController.text = data['last_name'] ?? '';
+      firstNameController.text = data['first_name'];
+      lastNameController.text = data['last_name'];
       phoneController.text = data['phone_number']?.toString() ?? '';
-      emailController.text = data['email'] ?? '';
+      emailController.text = data['email'];
     }
   }
 

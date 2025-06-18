@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:masaar/widgets/custom%20widgets/custom_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'add_locations.dart';
+import 'package:masaar/controllers/auth_controller.dart';
 
 class SavedLocationsPage extends StatefulWidget {
   @override
@@ -10,63 +11,162 @@ class SavedLocationsPage extends StatefulWidget {
 }
 
 class _SavedLocationsPageState extends State<SavedLocationsPage> {
-  List<Map<String, String>> locations = [];
+  List<Map<String, dynamic>> locations = [];
+  bool isLoading = true;
+  RealtimeChannel? _channel;
 
   final Color iconColor = const Color(0xFF563B9C);
-
   final supabase = Supabase.instance.client;
 
   @override
   void initState() {
     super.initState();
-    fetchLocationsFromDB();
+    _initializeRealtimeAndFetch();
   }
 
-  Future<void> fetchLocationsFromDB() async {
+  @override
+  void dispose() {
+    _channel?.unsubscribe();
+    super.dispose();
+  }
+
+  Future<void> _initializeRealtimeAndFetch() async {
+    await _fetchLocations();
+    _setupRealtimeSubscription();
+  }
+
+  void _setupRealtimeSubscription() {
+    final userId = Get.find<AuthController>().user?.id;
+    if (userId == null) return;
+
+    _channel =
+        supabase
+            .channel('locations_channel')
+            .onPostgresChanges(
+              event: PostgresChangeEvent.all,
+              schema: 'public',
+              table: 'locations',
+              filter: PostgresChangeFilter(
+                type: PostgresChangeFilterType.eq,
+                column: 'customer_id',
+                value: userId,
+              ),
+              callback: (payload) {
+                print('Realtime event: ${payload.eventType}');
+                _fetchLocations(); // Refresh data on any change
+              },
+            )
+            .subscribe();
+  }
+
+  Future<void> _fetchLocations() async {
+    final userId = Get.find<AuthController>().user?.id;
+    if (userId == null) {
+      setState(() => isLoading = false);
+      return;
+    }
+
     try {
-      final data = await supabase.from('locations').select();
+      final data = await supabase
+          .from('locations')
+          .select()
+          .eq('customer_id', userId)
+          .order('created_at', ascending: false);
 
       setState(() {
-        locations =
-            (data as List<dynamic>).map<Map<String, String>>((item) {
-              return {
-                'name': item['location_name']?.toString() ?? '',
-                'address': item['address']?.toString() ?? '',
-              };
-            }).toList();
+        locations = List<Map<String, dynamic>>.from(data);
+        isLoading = false;
       });
     } catch (e) {
-      print('Error fetching locations: $e');
+      print('Exception fetching locations: $e');
+      setState(() => isLoading = false);
+      _showErrorSnackbar('Failed to load locations');
     }
   }
 
-  void _addLocation(Map<String, String> location) {
-    setState(() {
-      locations.add(location);
-    });
+  Future<void> _deleteLocation(int index) async {
+    final locationId = locations[index]['id'];
+    if (locationId == null) return;
+
+    // Show confirmation dialog
+    final confirmed = await _showDeleteConfirmation(
+      locations[index]['location_name'] ?? 'this location',
+    );
+    if (!confirmed) return;
+
+    try {
+      await supabase.from('locations').delete().eq('id', locationId);
+
+      _showSuccessSnackbar('Location deleted successfully');
+    } catch (e) {
+      print('Exception deleting location: $e');
+      _showErrorSnackbar('Failed to delete location');
+    }
   }
 
-  /*
-      Make this function show two buttons
-      1- Edit --> Allow the user to edit the location
-      2- Delete --> Allow the user to delete the location
-      if the user clicks on the delete button, remove the location from the list
-      and also delete it from the database
+  Future<bool> _showDeleteConfirmation(String locationName) async {
+    return await showDialog<bool>(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: const Text('Delete Location'),
+                content: Text(
+                  'Are you sure you want to delete "$locationName"?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    style: TextButton.styleFrom(foregroundColor: Colors.red),
+                    child: const Text('Delete'),
+                  ),
+                ],
+              ),
+        ) ??
+        false;
+  }
 
-      if the user clicks on the edit button, allow the user to edit the location
-  */
   void _editLocation(int index) async {
+    final locationData = locations[index];
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AddLocationPage(initialData: locations[index]),
+        builder:
+            (_) => AddLocationPage(
+              initialData: {
+                'id': locationData['id'],
+                'name': locationData['location_name'],
+                'address': locationData['address'],
+                'city': locationData['city'],
+                'details': locationData['additional_details'],
+              },
+            ),
       ),
     );
-    if (result != null) {
-      setState(() {
-        locations[index] = result;
-      });
-    }
+    // No need to manually refresh - realtime will handle it
+  }
+
+  void _showErrorSnackbar(String message) {
+    Get.snackbar(
+      'Error',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+
+  void _showSuccessSnackbar(String message) {
+    Get.snackbar(
+      'Success',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+    );
   }
 
   Widget _staticLocationTile({
@@ -74,99 +174,104 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
     required String title,
     required String subtitle,
     Color? iconColor,
+    VoidCallback? onTap,
   }) {
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        elevation: 4,
+        shadowColor: Color(0xFF563B9C).withOpacity(0.12),
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Color(0xFF563B9C).withOpacity(0.12),
-              blurRadius: 16,
-              offset: Offset(0, 8),
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: this.iconColor, size: 32),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Icon(icon, color: this.iconColor, size: 32),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(color: Colors.grey[700], fontSize: 14),
-                  ),
-                ],
-              ),
+                ),
+                Icon(Icons.add, color: Colors.grey[400], size: 20),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _dynamicLocationTile(Map<String, String> loc, int index) {
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 16,
-              offset: Offset(0, 8),
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.star, color: iconColor, size: 32),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    loc['name'] ?? '',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+  Widget _dynamicLocationTile(Map<String, dynamic> location, int index) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        elevation: 4,
+        shadowColor: Colors.black.withOpacity(0.1),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(Icons.star, color: iconColor, size: 32),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      location['location_name'] ?? 'Unnamed Location',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    loc['address'] ?? '',
-                    style: TextStyle(color: Colors.grey[700], fontSize: 14),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      location['address'] ?? 'No address',
+                      style: TextStyle(color: Colors.grey[700], fontSize: 14),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (location['city'] != null && location['city'].isNotEmpty)
+                      Text(
+                        location['city'],
+                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                      ),
+                  ],
+                ),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.edit, color: iconColor),
-              onPressed: () => _editLocation(index),
-            ),
-          ],
+              IconButton(
+                icon: Icon(Icons.edit, color: iconColor),
+                onPressed: () => _editLocation(index),
+                tooltip: 'Edit location',
+              ),
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: () => _deleteLocation(index),
+                tooltip: 'Delete location',
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -175,12 +280,10 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
         leading: TextButton(
-          onPressed: () {
-            Get.back();
-          },
+          onPressed: () => Get.back(),
           style: TextButton.styleFrom(
             padding: EdgeInsets.zero,
             minimumSize: const Size(0, 0),
@@ -204,58 +307,126 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
         elevation: 0,
         centerTitle: true,
       ),
-      body: ListView(
-        children: [
-          Row(
-            children: const [
-              Padding(
-                padding: EdgeInsets.only(left: 24.0, right: 8.0),
-                child: Text(
-                  'Your places',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
+      body: RefreshIndicator(
+        onRefresh: _fetchLocations,
+        child:
+            isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(
+                        left: 24.0,
+                        top: 16.0,
+                        bottom: 8.0,
+                      ),
+                      child: Text(
+                        'Quick Access',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    _staticLocationTile(
+                      icon: Icons.home,
+                      title: 'Home',
+                      subtitle: 'Add your home address',
+                      onTap: () {
+                        // Navigate to add location with home preset
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => AddLocationPage(
+                                  initialData: {'name': 'Home'},
+                                ),
+                          ),
+                        );
+                      },
+                    ),
+                    _staticLocationTile(
+                      icon: Icons.work,
+                      title: 'Work',
+                      subtitle: 'Add your work address',
+                      onTap: () {
+                        // Navigate to add location with work preset
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => AddLocationPage(
+                                  initialData: {'name': 'Work'},
+                                ),
+                          ),
+                        );
+                      },
+                    ),
+                    if (locations.isNotEmpty) ...[
+                      const Padding(
+                        padding: EdgeInsets.only(
+                          left: 24.0,
+                          top: 24.0,
+                          bottom: 8.0,
+                        ),
+                        child: Text(
+                          'Your Saved Places',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      ...locations.asMap().entries.map(
+                        (entry) => _dynamicLocationTile(entry.value, entry.key),
+                      ),
+                    ] else if (!isLoading) ...[
+                      const SizedBox(height: 40),
+                      Center(
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.location_off,
+                              size: 80,
+                              color: Colors.grey[400],
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'No saved locations yet',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Add your frequently visited places',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 100), // Space for bottom button
+                  ],
                 ),
-              ),
-            ],
-          ),
-          Divider(
-            color: Colors.grey[300],
-            thickness: 2,
-            indent: 24,
-            endIndent: 24,
-          ),
-          _staticLocationTile(
-            icon: Icons.home,
-            title: 'Home',
-            subtitle: 'Add your home address',
-            iconColor: iconColor,
-          ),
-          _staticLocationTile(
-            icon: Icons.work,
-            title: 'Work',
-            subtitle: 'Add your work address',
-            iconColor: iconColor,
-          ),
-          ...List.generate(
-            locations.length,
-            (index) => _dynamicLocationTile(locations[index], index),
-          ),
-        ],
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: CustomButton(
           text: '+ Add a location',
           isActive: true,
-          onPressed: () async {
-            final result = await Navigator.push(
+          onPressed: () {
+            Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => AddLocationPage()),
             );
-            if (result != null) _addLocation(result);
           },
         ),
       ),

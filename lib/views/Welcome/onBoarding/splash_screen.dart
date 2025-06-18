@@ -27,6 +27,7 @@ class _SplashScreenState extends State<SplashScreen>
       SystemUiMode.manual,
       overlays: SystemUiOverlay.values,
     );
+    super.dispose();
   }
 
   @override
