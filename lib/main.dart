@@ -35,8 +35,9 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
 
-      // home: const StartupScreen(),
-      home: const ActiveCards(),
+      home: const StartupScreen(),
+
+      // home: const ActiveCards(),
       getPages: [
         GetPage(name: '/Home', page: () => HomePage()),
         GetPage(name: '/route', page: () => RoutePage()),
