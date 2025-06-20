@@ -5,7 +5,6 @@ import 'package:masaar/views/Account/add_new_card.dart';
 import 'package:masaar/widgets/custom%20widgets/custom_button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:masaar/views/Home/payment_screen.dart';
 
 class WalletView extends StatefulWidget {
   final String firstName;

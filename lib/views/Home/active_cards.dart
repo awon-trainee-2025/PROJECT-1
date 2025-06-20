@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:masaar/models/card_model.dart';
+import 'package:masaar/views/Home/payment_redirect_view.dart';
 import 'package:masaar/widgets/custom widgets/custom_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -74,7 +75,7 @@ class _ActiveCardsState extends State<ActiveCards> {
       amount: amountInHalalas,
       description: 'Manual Payment',
       metadata: {'source': 'ActiveCards'},
-      creditCard: CreditCardConfig(saveCard: true, manual: true),
+      creditCard: CreditCardConfig(saveCard: true, manual: false),
     );
   }
 
@@ -106,18 +107,17 @@ class _ActiveCardsState extends State<ActiveCards> {
     );
 
     if (result is PaymentResponse) {
-      switch (result.status) {
-        case PaymentStatus.paid:
-          print('✅ Payment successful');
-          break;
-        case PaymentStatus.failed:
-          print('❌ Payment failed');
-          break;
-        default:
-          print('⚠️ Unhandled status: ${result.status}');
+      final transactionUrl =
+          (result.source as CardPaymentResponseSource).transactionUrl;
+
+      if (transactionUrl != null) {
+        // Open the transactionUrl in a WebView or browser
+        Get.to(() => PaymentRedirectView(url: transactionUrl));
+      } else {
+        print('No transaction URL found');
       }
     } else {
-      print('❌ Unknown result type');
+      print('Unknown result type');
     }
   }
 
