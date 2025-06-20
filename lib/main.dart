@@ -4,6 +4,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:masaar/controllers/settings_controllers/account_controller.dart';
 import 'package:masaar/controllers/auth_controller.dart';
+import 'package:masaar/views/Account/active_cards.dart';
 import 'package:masaar/views/Home/home_page.dart';
 import 'package:masaar/views/Welcome/onBoarding/splash_screen.dart';
 import 'package:masaar/widgets/custom%20widgets/bottom_nav_bar.dart';
@@ -33,7 +34,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const StartupScreen(),
+
+      // home: const StartupScreen(),
+      home: const ActiveCards(),
       getPages: [
         GetPage(name: '/Home', page: () => HomePage()),
         GetPage(name: '/route', page: () => RoutePage()),

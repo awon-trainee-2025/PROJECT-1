@@ -5,7 +5,9 @@ import 'package:masaar/widgets/custom%20widgets/custom_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddNewCard extends StatefulWidget {
-  const AddNewCard({Key? key}) : super(key: key);
+  final VoidCallback? onCardAdded;
+
+  const AddNewCard({Key? key, this.onCardAdded}) : super(key: key);
 
   @override
   State<AddNewCard> createState() => _AddNewCardState();
@@ -13,6 +15,7 @@ class AddNewCard extends StatefulWidget {
 
 class _AddNewCardState extends State<AddNewCard> {
   final TextEditingController cardNumberController = TextEditingController();
+  final TextEditingController cardHolderController = TextEditingController();
   final TextEditingController expiryController = TextEditingController();
   final TextEditingController cvvController = TextEditingController();
 
@@ -22,6 +25,19 @@ class _AddNewCardState extends State<AddNewCard> {
     expiryController.dispose();
     cvvController.dispose();
     super.dispose();
+  }
+
+  void formatCardNumber(String input) {
+    final cleaned = input.replaceAll(RegExp(r'\s+'), '');
+    final buffer = StringBuffer();
+    for (int i = 0; i < cleaned.length; i++) {
+      if (i != 0 && i % 4 == 0) buffer.write(' ');
+      buffer.write(cleaned[i]);
+    }
+    cardNumberController.value = TextEditingValue(
+      text: buffer.toString(),
+      selection: TextSelection.collapsed(offset: buffer.length),
+    );
   }
 
   @override
@@ -87,15 +103,31 @@ class _AddNewCardState extends State<AddNewCard> {
                   ],
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: TextField(
-                  controller: cardNumberController,
-                  decoration: InputDecoration(
-                    labelText: 'Card number',
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: cardNumberController,
+                      decoration: const InputDecoration(
+                        labelText: 'Card number',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                      maxLength: 19,
+                      onChanged: formatCardNumber,
                     ),
-                  ),
-                  keyboardType: TextInputType.number,
+                    TextField(
+                      controller: cardHolderController,
+                      decoration: const InputDecoration(
+                        labelText: 'card holder name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                      ),
+                      keyboardType: TextInputType.text,
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
@@ -118,8 +150,8 @@ class _AddNewCardState extends State<AddNewCard> {
                       ),
                       child: TextField(
                         controller: expiryController,
-                        decoration: InputDecoration(
-                          labelText: 'Expiry date',
+                        decoration: const InputDecoration(
+                          labelText: 'Expiry date (MM/YY)',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                           ),
@@ -144,7 +176,7 @@ class _AddNewCardState extends State<AddNewCard> {
                       ),
                       child: TextField(
                         controller: cvvController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'CVV code',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -159,16 +191,21 @@ class _AddNewCardState extends State<AddNewCard> {
               ),
               const SizedBox(height: 32),
 
-              // Pay Button
+              // Save Button
               CustomButton(
                 text: 'Add card',
                 isActive: true,
                 onPressed: () async {
-                  final cardNumber = cardNumberController.text.trim();
+                  final cardNumber = cardNumberController.text.replaceAll(
+                    ' ',
+                    '',
+                  );
                   final expiry = expiryController.text.trim();
                   final cvv = cvvController.text.trim();
+                  final cardholder = cardHolderController.text.trim();
 
                   final customerId = Get.find<AuthController>().user?.id;
+
                   if (cardNumber.isEmpty ||
                       expiry.isEmpty ||
                       cvv.isEmpty ||
@@ -182,14 +219,36 @@ class _AddNewCardState extends State<AddNewCard> {
                     return;
                   }
 
+                  // Parse expiry date (MM/YY or MM/YYYY)
+                  final parts = expiry.contains('/') ? expiry.split('/') : [];
+                  if (parts.length != 2 || parts[0].length != 2) {
+                    Get.snackbar(
+                      'Invalid Format',
+                      'Expiry date must be in MM/YY format',
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
+                  final month = parts[0];
+                  var year = parts[1];
+                  if (year.length == 2) {
+                    year = '20$year';
+                  }
+
                   try {
                     final supabase = Supabase.instance.client;
-                    await supabase.from('wallets').insert({
-                      'card_number': cardNumber,
-                      'expire_date': expiry,
-                      'CVV': int.parse(cvv),
+                    await supabase.from('cards').insert({
+                      'number': cardNumber,
+                      'month': month,
+                      'year': year,
+                      'cvc': int.parse(cvv),
+                      'name': cardholder,
                       'customer_id': customerId,
                     });
+
+                    widget.onCardAdded?.call();
                     Get.back();
                     Get.snackbar(
                       'Success',
@@ -201,7 +260,7 @@ class _AddNewCardState extends State<AddNewCard> {
                     print('Add card error: $e');
                     Get.snackbar(
                       'Error',
-                      'Failed to add card',
+                      'Failed to add card: $e',
                       backgroundColor: Colors.red,
                       colorText: Colors.white,
                     );

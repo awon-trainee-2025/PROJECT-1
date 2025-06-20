@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:masaar/controllers/settings_controllers/account_controller.dart';
-import 'package:masaar/models/wallet_model.dart';
-import 'package:masaar/views/Account/active_cards.dart';
+import 'package:masaar/models/card_model.dart';
 import 'package:masaar/views/Account/add_new_card.dart';
 import 'package:masaar/widgets/custom%20widgets/custom_button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:masaar/views/Home/payment_screen.dart';
 
 class WalletView extends StatefulWidget {
   final String firstName;
@@ -20,47 +19,55 @@ class WalletView extends StatefulWidget {
 }
 
 class _WalletViewState extends State<WalletView> {
-  final AccountController accountController = Get.put(AccountController());
   final PageController _controller = PageController(viewportFraction: 0.85);
   int _currentPage = 0;
-  List<Wallet> wallets = [];
+  double walletBalance = 0.0;
+  List<CardModel> cards = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadWallets();
+    _loadWalletAndCards();
   }
 
-  Future<void> _loadWallets() async {
+  Future<void> _loadWalletAndCards() async {
     try {
       final supabase = Supabase.instance.client;
-
       final user = supabase.auth.currentUser;
-      print('Current user: \\${user?.id}');
       if (user == null) {
         setState(() {
           isLoading = false;
         });
         return;
       }
-      final data = await supabase
-          .from('wallets')
+
+      final walletData =
+          await supabase
+              .from('wallets')
+              .select()
+              .eq('customer_id', user.id)
+              .maybeSingle();
+
+      final cardsData = await supabase
+          .from('cards')
           .select()
           .eq('customer_id', user.id);
 
-      print('Fetched wallets data: \\${data.toString()}');
-
       setState(() {
-        wallets = (data as List).map((json) => Wallet.fromJson(json)).toList();
+        walletBalance =
+            walletData != null
+                ? double.tryParse(walletData['balance'].toString()) ?? 0.0
+                : 0.0;
+        cards =
+            (cardsData as List)
+                .map((json) => CardModel.fromJson(json))
+                .toList();
         isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-
-      print('Error loading wallets: $e');
+      setState(() => isLoading = false);
+      print('Error loading wallet/cards: $e');
     }
   }
 
@@ -72,15 +79,11 @@ class _WalletViewState extends State<WalletView> {
 
   @override
   Widget build(BuildContext context) {
-    if (accountController.profile.value == null) {
-      accountController.loadUserProfile();
-    }
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: TextButton(
-          onPressed: () => Get.back(),
+          onPressed: () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
             padding: EdgeInsets.zero,
             minimumSize: Size.zero,
@@ -142,9 +145,7 @@ class _WalletViewState extends State<WalletView> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                wallets.isNotEmpty
-                                    ? wallets[0].balance.toStringAsFixed(2)
-                                    : '0.00',
+                                walletBalance.toStringAsFixed(2),
                                 style: const TextStyle(
                                   color: Color(0xFF6A42C2),
                                   fontSize: 32,
@@ -173,26 +174,24 @@ class _WalletViewState extends State<WalletView> {
                       ),
                     ),
 
-                    // Credit Cards Swiper
                     SizedBox(
                       height: 200,
                       child:
-                          wallets.isEmpty
+                          cards.isEmpty
                               ? Center(child: Text('No cards found'))
                               : PageView.builder(
                                 controller: _controller,
-                                itemCount: wallets.length,
+                                itemCount: cards.length,
                                 onPageChanged: (index) {
                                   setState(() => _currentPage = index);
                                 },
                                 itemBuilder: (_, index) {
-                                  final card = wallets[index];
+                                  final card = cards[index];
                                   return AnimatedContainer(
                                     duration: const Duration(milliseconds: 300),
                                     margin: EdgeInsets.only(
                                       left: index == 0 ? 16 : 8,
-                                      right:
-                                          index == wallets.length - 1 ? 16 : 8,
+                                      right: index == cards.length - 1 ? 16 : 8,
                                       top: _currentPage == index ? 0 : 12,
                                       bottom: _currentPage == index ? 0 : 12,
                                     ),
@@ -219,9 +218,7 @@ class _WalletViewState extends State<WalletView> {
                                         ),
                                         const Spacer(),
                                         Text(
-                                          card.cardNumber != null
-                                              ? '**** **** **** ${card.cardNumber!.substring(card.cardNumber!.length - 4)}'
-                                              : '',
+                                          '**** **** **** ${card.lastFour}',
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 18,
@@ -229,7 +226,7 @@ class _WalletViewState extends State<WalletView> {
                                           ),
                                         ),
                                         Text(
-                                          'Exp ${card.expireDate ?? ''}',
+                                          'Exp ${card.expiryMonth ?? ''}/${card.expiryYear ?? ''}',
                                           style: const TextStyle(
                                             color: Colors.white70,
                                             fontSize: 14,
@@ -266,10 +263,9 @@ class _WalletViewState extends State<WalletView> {
 
                     const SizedBox(height: 16),
 
-                    // Page Indicator
                     SmoothPageIndicator(
                       controller: _controller,
-                      count: wallets.length,
+                      count: cards.length,
                       effect: ExpandingDotsEffect(
                         activeDotColor: const Color(0xFF6A42C2),
                         dotColor: const Color(0xFFADADAD),
@@ -288,8 +284,15 @@ class _WalletViewState extends State<WalletView> {
                       text: 'Add a new card',
                       isActive: true,
                       onPressed: () {
-                        Get.to(AddNewCard());
+                        Get.to(
+                          () => AddNewCard(onCardAdded: _loadWalletAndCards),
+                        );
                       },
+                      // onPressed: () {
+                      //   Get.to(
+                      //     () => AddNewCard(onCardAdded: _loadWalletAndCards),
+                      //   );
+                      // },
                     ),
                     const SizedBox(height: 24),
                   ],
