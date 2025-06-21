@@ -1,8 +1,8 @@
 class RideLogsModel {
   final String destination;
-  final String date;
+  final DateTime date;
   final String status;
-  final String price;
+  final double price;
   final String time;
 
   RideLogsModel({
@@ -13,5 +13,17 @@ class RideLogsModel {
     required this.time,
   });
 
-  String get month => date.split(" ").last.toLowerCase();
+  factory RideLogsModel.fromJson(Map<String, dynamic> json) {
+    return RideLogsModel(
+      destination: json['destination'] ?? '',
+      date: DateTime.parse(json['created_at']),
+      status: json['status'] ?? 'Completed',
+      price: double.tryParse(json['amount'].toString()) ?? 0,
+      time: DateTime.parse(
+        json['created_at'],
+      ).toLocal().toString().split(' ')[1].substring(0, 5),
+    );
+  }
+
+  String get monthYear => '${date.month}-${date.year}';
 }
