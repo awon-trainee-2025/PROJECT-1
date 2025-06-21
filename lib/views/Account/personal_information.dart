@@ -60,14 +60,37 @@ class PersonalInformation extends StatelessWidget {
                     children: [
                       const SizedBox(height: 24),
                       InkWell(
-                        onTap: () => print('Image tapped'),
-                        child: Image.asset(
-                          'images/profile_upload.png',
-                          height: 100,
-                          width: 100,
-                          fit: BoxFit.cover,
-                        ),
+                        onTap: () async {
+                          await accountController.pickAndUploadImage();
+                        },
+                        child: Obx(() {
+                          final imageFile =
+                              accountController.selectedImage.value;
+                          final profile_image =
+                              accountController.profile.value?['profile_image'];
+
+                          if (imageFile != null) {
+                            return CircleAvatar(
+                              radius: 50,
+                              backgroundImage: FileImage(imageFile),
+                            );
+                          } else if (profile_image != null &&
+                              profile_image != '') {
+                            return CircleAvatar(
+                              radius: 50,
+                              backgroundImage: NetworkImage(profile_image),
+                            );
+                          } else {
+                            return Image.asset(
+                              'images/profile_upload.png',
+                              height: 100,
+                              width: 100,
+                              fit: BoxFit.cover,
+                            );
+                          }
+                        }),
                       ),
+
                       const SizedBox(height: 12),
                       const Text(
                         'Add a profile picture so drivers can recognize you',

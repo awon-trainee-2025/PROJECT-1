@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AccountController extends GetxController {
@@ -11,6 +14,8 @@ class AccountController extends GetxController {
   final emailController = TextEditingController();
 
   final SupabaseClient supabase = Supabase.instance.client;
+  final picker = ImagePicker();
+  Rx<File?> selectedImage = Rx<File?>(null);
 
   @override
   void onInit() {
@@ -49,10 +54,10 @@ class AccountController extends GetxController {
   Future<void> loadProfileIntoFields() async {
     final data = profile.value;
     if (data != null) {
-      firstNameController.text = data['first_name'];
-      lastNameController.text = data['last_name'];
+      firstNameController.text = data['first_name'] ?? '';
+      lastNameController.text = data['last_name'] ?? '';
       phoneController.text = data['phone_number']?.toString() ?? '';
-      emailController.text = data['email'];
+      emailController.text = data['email'] ?? '';
     }
   }
 
@@ -87,6 +92,52 @@ class AccountController extends GetxController {
         'Failed to update profile',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> pickAndUploadImage() async {
+    try {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile == null) return;
+
+      final file = File(pickedFile.path);
+      selectedImage.value = file;
+
+      final fileExt = extension(file.path);
+      final fileName =
+          'profile_${DateTime.now().millisecondsSinceEpoch}$fileExt';
+      final storagePath = 'avatars/$fileName';
+
+      await supabase.storage
+          .from('avatars')
+          .upload(
+            storagePath,
+            file,
+            fileOptions: const FileOptions(upsert: true),
+          );
+
+      final publicUrl = supabase.storage
+          .from('avatars')
+          .getPublicUrl(storagePath);
+
+      final user = supabase.auth.currentUser;
+      if (user != null) {
+        await supabase
+            .from('customers')
+            .update({'profile_image': publicUrl})
+            .eq('email', user.email!);
+      }
+
+      await loadUserProfile();
+      Get.snackbar('Success', 'Image uploaded and profile updated');
+    } catch (e) {
+      debugPrint('Image upload error: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to upload image',
+        backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     }
