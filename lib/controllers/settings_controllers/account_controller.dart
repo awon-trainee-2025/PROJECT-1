@@ -108,10 +108,11 @@ class AccountController extends GetxController {
       final fileExt = extension(file.path);
       final fileName =
           'profile_${DateTime.now().millisecondsSinceEpoch}$fileExt';
-      final storagePath = 'avatars/$fileName';
+      final storagePath = 'customers/$fileName';
 
+      // رفع الصورة إلى bucket 'images'
       await supabase.storage
-          .from('avatars')
+          .from('images')
           .upload(
             storagePath,
             file,
@@ -119,7 +120,7 @@ class AccountController extends GetxController {
           );
 
       final publicUrl = supabase.storage
-          .from('avatars')
+          .from('images')
           .getPublicUrl(storagePath);
 
       final user = supabase.auth.currentUser;

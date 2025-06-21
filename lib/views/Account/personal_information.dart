@@ -66,28 +66,21 @@ class PersonalInformation extends StatelessWidget {
                         child: Obx(() {
                           final imageFile =
                               accountController.selectedImage.value;
-                          final profile_image =
+                          final imageUrl =
                               accountController.profile.value?['profile_image'];
 
-                          if (imageFile != null) {
-                            return CircleAvatar(
-                              radius: 50,
-                              backgroundImage: FileImage(imageFile),
-                            );
-                          } else if (profile_image != null &&
-                              profile_image != '') {
-                            return CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(profile_image),
-                            );
-                          } else {
-                            return Image.asset(
-                              'images/profile_upload.png',
-                              height: 100,
-                              width: 100,
-                              fit: BoxFit.cover,
-                            );
-                          }
+                          return CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.grey[300],
+                            backgroundImage:
+                                imageFile != null
+                                    ? FileImage(imageFile)
+                                    : (imageUrl != null && imageUrl.isNotEmpty)
+                                    ? NetworkImage(imageUrl) as ImageProvider
+                                    : AssetImage(
+                                      'assets/images/profile_upload.png',
+                                    ),
+                          );
                         }),
                       ),
 

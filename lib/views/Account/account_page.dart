@@ -26,9 +26,24 @@ class AccountPage extends StatelessWidget {
               return Column(
                 children: [
                   // Profile Picture + Username
-                  const Image(
-                    image: AssetImage('images/profile_placeholder.png'),
-                  ),
+                  Obx(() {
+                    final imageFile = controller.selectedImage.value;
+                    final imageUrl = controller.profile.value?['profile_image'];
+
+                    return CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.grey[300],
+                      backgroundImage:
+                          imageFile != null
+                              ? FileImage(imageFile)
+                              : (imageUrl != null && imageUrl.isNotEmpty)
+                              ? NetworkImage(imageUrl) as ImageProvider
+                              : const AssetImage(
+                                'images/profile_placeholder.png',
+                              ),
+                    );
+                  }),
+
                   const SizedBox(height: 16),
                   Text(
                     AccountController.getFullName(
