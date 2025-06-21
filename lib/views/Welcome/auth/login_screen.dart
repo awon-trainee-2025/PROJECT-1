@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 40.0),
-                // child: SvgPicture.asset('images/onboarding4.svg'),
+                child: SvgPicture.asset('images/oboarding4.svg'),
               ),
             ),
           ),

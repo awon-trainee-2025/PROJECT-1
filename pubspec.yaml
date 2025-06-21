@@ -79,6 +79,7 @@ flutter:
     - images\location.png
     - images\wallet.png
     - images\logout.png
+    - images\logo.png
     - images\delete.png
     - images\back_button.png
     - images\profile_upload.png

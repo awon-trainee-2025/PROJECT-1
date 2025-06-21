@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:masaar/views/Welcome/auth/login_screen.dart';
+import 'package:masaar/views/Welcome/onBoarding/splash_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthController extends GetxController {

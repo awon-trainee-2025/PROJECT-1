@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen>
         decoration: BoxDecoration(color: Color(0xFF6A42C2)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          // children: [Image.asset('images/logo.png', width: 315, height: 97.89)],
+          children: [Image.asset('images/logo.png', width: 315, height: 97.89)],
         ),
       ),
     );
