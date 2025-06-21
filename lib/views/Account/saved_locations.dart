@@ -45,7 +45,6 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
       event: PostgresChangeEvent.all,
       schema: 'public',
       table: 'locations',
-
       callback: (payload) {
         _fetchLocations(); // Refresh data on any change
       },
@@ -80,17 +79,20 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
   }
 
   Future<void> _deleteLocation(int index) async {
-    final locationId = locations[index]['id'];
+    final locationId = locations[index]['location_id'];
     if (locationId == null) return;
 
-    // Show confirmation dialog
     final confirmed = await _showDeleteConfirmation(
       locations[index]['location_name'] ?? 'this location',
     );
     if (!confirmed) return;
 
     try {
-      await supabase.from('locations').delete().eq('id', locationId);
+      await supabase.from('locations').delete().eq('location_id', locationId);
+
+      setState(() {
+        locations.removeAt(index);
+      });
 
       _showSuccessSnackbar('Location deleted successfully');
     } catch (e) {
@@ -126,7 +128,7 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
 
   void _editLocation(int index) async {
     final locationData = locations[index];
-    final result = await Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder:
@@ -141,7 +143,7 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
             ),
       ),
     );
-    // No need to manually refresh - realtime will handle it
+    // Real-time subscription سيحدث القائمة تلقائياً
   }
 
   void _showErrorSnackbar(String message) {
@@ -329,7 +331,6 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
                       title: 'Home',
                       subtitle: 'Add your home address',
                       onTap: () {
-                        // Navigate to add location with home preset
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -346,7 +347,6 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
                       title: 'Work',
                       subtitle: 'Add your work address',
                       onTap: () {
-                        // Navigate to add location with work preset
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -408,7 +408,7 @@ class _SavedLocationsPageState extends State<SavedLocationsPage> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 100), // Space for bottom button
+                    const SizedBox(height: 100),
                   ],
                 ),
       ),
